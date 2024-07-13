@@ -3,6 +3,11 @@ import { Container, Stack, Button, Typography, TextField } from "@mui/material";
 import LogoImg from "../../assets/logo.svg";
 import ImageEl from "../../components/utils/ImageEl";
 import { Form } from "react-router-dom";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../../firebase";
 
 const initForm = {
   email: "",
@@ -10,6 +15,7 @@ const initForm = {
 };
 
 function Authscreen() {
+  const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState(initForm);
   const AuthText = isLogin
@@ -23,7 +29,20 @@ function Authscreen() {
     }));
   };
 
-  const handleAuth = () => {};
+  const handleAuth = async () => {
+    try {
+      setLoading(true);
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, form.email, form.password);
+      } else {
+        await createUserWithEmailAndPassword(auth, form.email, form.password);
+      }
+    } catch (err) {
+      const msg = err.code.split("auth/")[1].split("-").join(" ");
+      console.log(msg);
+      setLoading(false);
+    }
+  };
 
   return (
     <Container
@@ -53,7 +72,7 @@ function Authscreen() {
           label="Password"
         />
         <Button
-          disabled={!form.email.trim() || !form.password.trim()}
+          disabled={loading || !form.email.trim() || !form.password.trim()}
           onClick={handleAuth}
           size="large"
           variant="contained"
