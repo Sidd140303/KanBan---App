@@ -68,6 +68,7 @@ function Authscreen() {
         <TextField
           value={form.password}
           name="password"
+          type="password"
           onChange={handlleChange}
           label="Password"
         />
