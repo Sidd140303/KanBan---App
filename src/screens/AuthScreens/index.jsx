@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../../firebase";
+import usestore from "../../store";
 
 const initForm = {
   email: "",
@@ -18,6 +19,7 @@ function Authscreen() {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState(initForm);
+  const {setToastr} = usestore();
   const AuthText = isLogin
     ? "Do not have an account? "
     : "Already have an account...";
@@ -39,7 +41,7 @@ function Authscreen() {
       }
     } catch (err) {
       const msg = err.code.split("auth/")[1].split("-").join(" ");
-      console.log(msg);
+      setToastr(msg);
       setLoading(false);
     }
   };

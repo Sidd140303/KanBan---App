@@ -14,6 +14,7 @@ import BoardsScreen from "./screens/BoardsScreen";
 //Utils
 import PublicOnlyRoute from "./components/utils/PublicOnlyRoute";
 import PrivateRoute from "./components/utils/PrivateRoute";
+import SnackBarManager from "./components/Layout/SnackbarManager";
 
 function App() {
   const { loader, setLoginStatus } = usestore();
@@ -31,6 +32,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <SnackBarManager />
       <BrowserRouter>
         <Routes>
           <Route

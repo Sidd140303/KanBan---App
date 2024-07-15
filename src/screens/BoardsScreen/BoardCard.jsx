@@ -1,15 +1,17 @@
 import React from "react";
 import OpenIcon from "@mui/icons-material/Launch";
 import { Typography, IconButton, Grid, Stack, Box } from "@mui/material";
+import { colors } from "../../theme";
 
-function BoardCard() {
+function BoardCard({ name, color, createdAt }) {
+  console.log(name);
   return (
     <Grid item xs={3}>
       <Stack
         p={2}
         bgcolor="background.paper"
         borderLeft="5px solid"
-        borderColor="white"
+        borderColor={colors[color]}
       >
         <Stack
           direction="row"
@@ -24,14 +26,14 @@ function BoardCard() {
               fontWeight={400}
               variant="h6"
             >
-              Board Name
+              {name}
             </Typography>
           </Box>
           <IconButton size="small">
             <OpenIcon />
           </IconButton>
         </Stack>
-        <Typography variant="caption">created at : 15/07/2024</Typography>
+        <Typography variant="caption">created at : {createdAt}</Typography>
       </Stack>
     </Grid>
   );
