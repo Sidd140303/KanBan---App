@@ -6,7 +6,7 @@ function Modalheader({ title, onClose }) {
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center">
       <Typography variant="h6">{title}</Typography>
-      <IconButton size="small" onClick={onclose}>
+      <IconButton size="small" onClick={onClose}>
         <CloseIcon />
       </IconButton>
     </Stack>

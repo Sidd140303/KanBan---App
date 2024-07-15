@@ -9,14 +9,28 @@ import {
 } from "@mui/material";
 import Modalheader from "../../components/Layout/Modalheader";
 import { colors } from "../../theme";
+import useApp from "../../hooks/useApp";
 
-function CreateBoardModal() {
+function CreateBoardModal({ closeModal }) {
   const [name, setName] = useState("");
   const [color, setColor] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const { createBoard } = useApp();
+  const handleCreate = async () => {
+    try {
+      setLoading(true);
+      await createBoard({ name, color });
+      closeModal();
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
   return (
-    <Dialog open fullWidth maxWidth="xs">
+    <Dialog onClose={closeModal} open fullWidth maxWidth="xs">
       <Stack p={2}>
-        <Modalheader title="Create Board" />
+        <Modalheader onClose={closeModal} title="Create Board" />
         <Stack my={5} spacing={3}>
           <TextField
             value={name}
@@ -43,7 +57,12 @@ function CreateBoardModal() {
             ))}
           </Stack>
         </Stack>
-        <Button variant="contained" size="large">
+        <Button
+          disabled={loading}
+          onClick={handleCreate}
+          variant="contained"
+          size="large"
+        >
           Create
         </Button>
       </Stack>
