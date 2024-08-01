@@ -1,4 +1,4 @@
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { getAuth } from 'firebase/auth'
 import usestore from '../store';
@@ -8,14 +8,37 @@ const useApp = () => {
     const boardsColRef = collection(db, `users/${uid}/boards`);
     const { setBoards, addBoard } = usestore();
 
+    const updateBoardData = async (boardId, tabs) => {
+        const docRef = doc(db, `users/${uid}/boardsData/${boardId}`)
+        try {
+            await updateDoc(docRef, { tabs })
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
+    const fetchBoard = async (boardId) => {
+        const docRef = doc(db, `users/${uid}/boardsData/${boardId}`)
+        try {
+            const doc = await getDoc(docRef)
+            if (doc.exists) {
+                return doc.data()
+            }
+            else return null
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const createBoard = async ({ name, color }) => {
         try {
-            await addDoc(boardsColRef, {
+            const doc = await addDoc(boardsColRef, {
                 name,
                 color,
                 createdAt: serverTimestamp()
             })
-            addBoard({ name, color, createdAt: new Date().toLocaleDateString() })
+            addBoard({ name, color, createdAt: new Date().toLocaleString('en-US'), id: doc.id })
         } catch (error) {
             console.log(error);
             throw (error)
@@ -26,7 +49,11 @@ const useApp = () => {
         try {
             const q = query(boardsColRef, orderBy('createdAt', 'desc'))
             const querySnapShot = await getDocs(q)
-            const boards = querySnapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id, createdAt: doc.data().createdAt.toDate().toLocaleDateString() }))
+            const boards = querySnapShot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+                createdAt: doc.data().createdAt.toDate().toLocaleString('en-US')
+            }))
             setBoards(boards);
 
         } catch (error) {
@@ -39,6 +66,6 @@ const useApp = () => {
     }
 
 
-    return { createBoard, fetchBoards }
+    return { createBoard, fetchBoards, fetchBoard, updateBoardData }
 }
 export default useApp; 

@@ -12,10 +12,12 @@ const store = (set) => ({
     addBoard: board => set((old) => ({ boards: [board, ...old.boards] }), false, "addBoard"),
     setLoginStatus: status => set({
         isLoggedIn: status,
-        loader: false
+        loader: false,
+        boards: [],
+        areBoardsFetched: false
     }, false, "setLoginStatus")
 })
 
 
 const usestore = create(devtools(store))
-export default (usestore);
+export default usestore;

@@ -3,6 +3,8 @@ import { AppBar, Toolbar, Button, Stack } from "@mui/material";
 import ImageEl from "../../components/utils/ImageEl";
 import LogoImg from "../../assets/logo.svg";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 function Topbar({ openModal }) {
   return (
@@ -20,10 +22,14 @@ function Topbar({ openModal }) {
           alt="FlowBoard"
         />
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={openModal}> 
+          <Button variant="contained" onClick={openModal}>
             Create Board
           </Button>
-          <Button startIcon={<LogoutIcon />} color="inherit">
+          <Button
+            onClick={() => signOut(auth)}
+            startIcon={<LogoutIcon />}
+            color="inherit"
+          >
             Logout
           </Button>
         </Stack>

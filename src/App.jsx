@@ -10,6 +10,7 @@ import AppLoader from "./components/Layout/AppLoader";
 //screens
 import Authscreen from "./screens/AuthScreens";
 import BoardsScreen from "./screens/BoardsScreen";
+import BoardScreen from "./screens/BoardScreen";
 
 //Utils
 import PublicOnlyRoute from "./components/utils/PublicOnlyRoute";
@@ -19,7 +20,6 @@ import SnackBarManager from "./components/Layout/SnackbarManager";
 function App() {
   const { loader, setLoginStatus } = usestore();
 
-  console.log(loader);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setLoginStatus(!!user);
@@ -42,6 +42,10 @@ function App() {
           <Route
             path="/boards"
             element={<PrivateRoute Component={BoardsScreen} />}
+          />
+          <Route
+            path="/boards/:boardId"
+            element={<PrivateRoute Component={BoardScreen} />}
           />
         </Routes>
       </BrowserRouter>
