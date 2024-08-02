@@ -1,32 +1,77 @@
-import React from "react";
-import { Grid, Stack, Typography, IconButton } from "@mui/material";
+import React, { memo } from "react";
+import {
+  Grid,
+  Stack,
+  Typography,
+  IconButton,
+  useMediaQuery,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/AddCircleOutline";
 import Task from "./Task";
+// import { Droppable } from "react-beautiful-dnd";
+import Droppable from "../../components/utils/strictModeDroppable";
 
-export default function BoardTab({ name, addTask, tasks }) {
+function BoardTab({
+  name,
+  tasks,
+  status,
+  openAddTaskModal,
+  removeTask,
+  openShiftTaskModal,
+}) {
+  console.log("tab :", name);
+  const isXs = useMediaQuery((theme) => theme.breakpoints.only("xs"));
+
   return (
-    <>
-      <Grid item xs={4}>
-        <Stack p={3} bgcolor="#000">
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography fontWeight={400} variant="h6">
-              {name}
-            </Typography>
-            <IconButton onClick={addTask}>
-              <AddIcon fontSize="small" />
-            </IconButton>
+    <Droppable droppableId={status}>
+      {(provided) => (
+        <Grid
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          item
+          xs={12}
+          sm={4}
+        >
+          <Stack p={3} bgcolor="#000">
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography fontWeight={400} variant="h6">
+                {name}
+              </Typography>
+              <IconButton onClick={() => openAddTaskModal(status)}>
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Stack>
+            <Stack spacing={2} mt={3}>
+              {tasks.map((task, index) => (
+                <Task
+                  onClick={
+                    isXs
+                      ? () =>
+                          openShiftTaskModal({
+                            text: task.text,
+                            index: index,
+                            status: status,
+                          })
+                      : null
+                  }
+                  key={task.id}
+                  text={task.text}
+                  id={task.id}
+                  removeTask={() => removeTask(status, task.id)}
+                  index={index}
+                />
+              ))}
+            </Stack>
+            {provided.placeholder}
           </Stack>
-          <Stack spacing={2} mt={3}>
-            {tasks.map((task) => (
-              <Task key={task.id} text={task.text} id={task.id} />
-            ))}
-          </Stack>
-        </Stack>
-      </Grid>
-    </>
+        </Grid>
+      )}
+    </Droppable>
   );
 }
+
+export default memo(BoardTab);

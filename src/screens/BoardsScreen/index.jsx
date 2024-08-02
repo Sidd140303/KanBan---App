@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Topbar from "./Topbar";
 import CreateBoardModal from "./CreateBoardModal";
 import NoBoards from "./NoBoards";
-import { Stack, Grid, Typography, IconButton, Box } from "@mui/material";
+import { Stack, Grid } from "@mui/material";
 import BoardCard from "./BoardCard";
 import useApp from "../../hooks/useApp";
 import AppLoader from "../../components/Layout/AppLoader";
@@ -22,14 +22,18 @@ function BoardsScreen() {
     <>
       <Topbar openModal={() => setShowModal(true)} />
       {showModal && <CreateBoardModal closeModal={() => setShowModal(false)} />}
-      {/* <NoBoards /> */}
-      <Stack p={3} mt={5}>
-        <Grid container spacing={4}>
-          {boards.map((board) => (
-            <BoardCard key={board.id} {...board} />
-          ))}
-        </Grid>
-      </Stack>
+
+      {!boards.length ? (
+        <NoBoards />
+      ) : (
+        <Stack p={3} mt={5}>
+          <Grid container spacing={{xs : 2, sm : 4}}>
+            {boards.map((board) => (
+              <BoardCard key={board.id} {...board} />
+            ))}
+          </Grid>
+        </Stack>
+      )}
     </>
   );
 }

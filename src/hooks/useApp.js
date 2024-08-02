@@ -1,20 +1,39 @@
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore'
+import {
+    collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, updateDoc, deleteDoc
+} from 'firebase/firestore'
 import { db } from '../firebase'
 import { getAuth } from 'firebase/auth'
 import usestore from '../store';
+import { useNavigate } from 'react-router-dom';
 
 const useApp = () => {
+    const navigate = useNavigate()
     const { currentUser: { uid } } = getAuth();
     const boardsColRef = collection(db, `users/${uid}/boards`);
-    const { setBoards, addBoard } = usestore();
+    const { boards, setBoards, addBoard, setToastr } = usestore();
+
+    const deleteBoard = async (boardId) => {
+        try {
+            const docRef = doc(db, `users/${uid}/boards/${boardId}`)
+            await deleteDoc(docRef)
+            const tBoards = boards.filter(board => board.id !== boardId)
+            setBoards(tBoards)
+            navigate('/boards')
+
+        } catch (error) {
+            setToastr("Error deleting board")
+            throw error
+        }
+    }
 
     const updateBoardData = async (boardId, tabs) => {
         const docRef = doc(db, `users/${uid}/boardsData/${boardId}`)
         try {
-            await updateDoc(docRef, { tabs })
+            await updateDoc(docRef, { tabs, lastUpdated: serverTimestamp() })
         } catch (error) {
             console.log(error);
-
+            setToastr("Error updating board")
+            throw err
         }
     }
 
@@ -28,6 +47,8 @@ const useApp = () => {
             else return null
         } catch (error) {
             console.log(error);
+            setToastr("Error fetching board")
+            throw err
         }
     }
 
@@ -40,8 +61,8 @@ const useApp = () => {
             })
             addBoard({ name, color, createdAt: new Date().toLocaleString('en-US'), id: doc.id })
         } catch (error) {
-            console.log(error);
-            throw (error)
+            setToastr("Error creating board")
+            throw err
 
         }
     }
@@ -57,7 +78,7 @@ const useApp = () => {
             setBoards(boards);
 
         } catch (error) {
-            console.log(error);
+            setToastr("Error fetching board")
 
         }
         finally {
@@ -66,6 +87,8 @@ const useApp = () => {
     }
 
 
-    return { createBoard, fetchBoards, fetchBoard, updateBoardData }
+
+
+    return { createBoard, fetchBoards, fetchBoard, updateBoardData, deleteBoard }
 }
 export default useApp; 

@@ -13,4 +13,4 @@ function Modalheader({ title, onClose }) {
   );
 }
 
-export default Modalheader;
+export default Modalheader

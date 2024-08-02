@@ -10,13 +10,22 @@ import {
 import Modalheader from "../../components/Layout/Modalheader";
 import { colors } from "../../theme";
 import useApp from "../../hooks/useApp";
+import usestore from "../../store";
 
 function CreateBoardModal({ closeModal }) {
   const [name, setName] = useState("");
   const [color, setColor] = useState(0);
   const [loading, setLoading] = useState(false);
   const { createBoard } = useApp();
+  const { setToastr } = usestore();
+
   const handleCreate = async () => {
+    const tName = name.trim();
+    if (!tName) return setToastr("You need to enter board name");
+    if (!/^[a-zA-Z0-9\s]{1,20}$/.test(tName))
+      return setToastr(
+        "Board name cannot contain special characters and should not be more than 20 chars"
+      );
     try {
       setLoading(true);
       await createBoard({ name, color });
