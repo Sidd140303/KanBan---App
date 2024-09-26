@@ -22,8 +22,4 @@ This is a **Kanban board application** built using **React**. It allows users to
 - **HTML5**: Structuring the web application.
 - **State Management**: Utilized React’s `useState` and `useEffect` hooks for managing task states.
 
-## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/kanban-board.git
